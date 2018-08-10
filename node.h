@@ -4,7 +4,12 @@
 #define NODE_H_
 
 class Node {
- public:
+ 
+	char node_data;
+	Node *prev_ptr;
+	Node *next_ptr;
+
+public:
   explicit Node(char data);
   char GetData();
   Node* InsertPreviousNode(char data);

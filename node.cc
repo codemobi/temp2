@@ -3,33 +3,83 @@
 #include "node.h"
 
 Node::Node(char data) {
-  return;
+	node_data = data;
+	prev_ptr = nullptr;
+	next_ptr = nullptr;
+	return;
 }
 
 char Node::GetData() {
-  return '\0';
+
+  return node_data ;
 }
 
 Node* Node::GetPreviousNode() {
-  return nullptr;
+
+  return prev_ptr;
 }
 
 Node* Node::GetNextNode() {
-  return nullptr;
+  return next_ptr;
 }
 
 Node* Node::InsertPreviousNode(char data) {
-  return nullptr;
+	Node * node = new Node(data);
+	if (prev_ptr != nullptr) {
+		prev_ptr->next_ptr = node;
+		node->prev_ptr = prev_ptr;
+		node->next_ptr = this;
+		prev_ptr = node;
+	}
+	else { // nullptr
+		prev_ptr = node;
+		node->next_ptr = this;
+	}
+	return node;
 }
 
 Node* Node::InsertNextNode(char data) {
-  return nullptr;
+	Node * node = new Node(data);
+	if (next_ptr != nullptr) {
+		next_ptr->prev_ptr = node;
+		node->next_ptr = next_ptr;
+		node->prev_ptr = this;
+		next_ptr = node;
+	}
+	else { // nullptr
+		next_ptr = node;
+		node->prev_ptr = this;
+
+	}
+	return node;
 }
 
 bool Node::ErasePreviousNode() {
-  return false;
+	Node *temp_ptr ;
+	if (prev_ptr != nullptr) {
+		temp_ptr = prev_ptr;
+		
+		prev_ptr = prev_ptr->prev_ptr;
+		if (prev_ptr != nullptr) prev_ptr->next_ptr = this;
+		
+		delete temp_ptr;
+		return true;
+	}
+
+	return false;
 }
 
 bool Node::EraseNextNode() {
-  return false;
+	Node *temp_ptr;
+	if (next_ptr != nullptr) {
+		temp_ptr = next_ptr;
+
+		next_ptr = next_ptr->next_ptr;
+		if (next_ptr != nullptr) next_ptr->prev_ptr = this;
+
+		delete temp_ptr;
+		return true;
+	}
+
+	return false;
 }
