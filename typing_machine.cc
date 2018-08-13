@@ -1,35 +1,129 @@
 // Copyright 2018 <Author>
 
 #include "typing_machine.h"
+#include <string>
 
 TypingMachine::TypingMachine() {
+	root = cursor = new Node(0);
+	head = tail = nullptr;
+
   return;
 }
 
 void TypingMachine::HomeKey() {
+	cursor = root;
   return;
 }
 
 void TypingMachine::EndKey() {
+	cursor = tail;
   return;
 }
 
 void TypingMachine::LeftKey() {
+	if (cursor == root) return;
+
+	Node *n = cursor->GetPreviousNode();
+	if (n != nullptr)
+		cursor = n;
   return;
 }
 
 void TypingMachine::RightKey() {
-  return;
+	Node *n = cursor->GetNextNode();
+	if (n != nullptr)
+		cursor = n;
+	return;
 }
 
 bool TypingMachine::TypeKey(char key) {
-  return false;
+//	if (key !=8 && (key < 32 || key > 126)) return false;
+	if (key < 32 || key > 126) return false;
+
+	Node *n;
+	if (cursor == root)
+	{
+		n = root->InsertNextNode(key);
+		head=tail=cursor = n;
+	}
+	else
+	{
+		n = cursor->InsertNextNode(key);
+		if (tail == cursor) tail = n;
+		cursor = n;
+
+	}
+
+  return true;
 }
 
 bool TypingMachine::EraseKey() {
-  return false;
+	
+	Node * n;
+	if (cursor == root) 
+		return false;
+	else
+	{
+		if (cursor == head)
+		{
+			if (head == tail)
+			{
+				head = tail = nullptr;
+				root->EraseNextNode();
+				cursor = root;
+			}
+			else // head != tail
+			{
+				n = cursor->GetPreviousNode();
+
+				cursor = head = head->GetNextNode();;
+
+				n->EraseNextNode();
+
+			}
+
+			return true;
+		}
+		else // cursor != head
+		{
+			n = cursor->GetPreviousNode();
+			if (cursor == tail)
+				cursor = tail = n;
+			n->EraseNextNode();
+			return true;
+		}
+	}
+
+	return true;
 }
 
 std::string TypingMachine::Print(char separator) {
-  return "";
+	Node *n;
+	char c;
+	std::string st;
+	n = head;
+	if (head == nullptr)
+	{
+		st.push_back(separator);
+	}
+	else
+	{
+		if (root == cursor){
+			st.push_back(separator);
+		}
+		while (n != nullptr)
+		{
+			if (n == cursor ){
+				c = n->GetData();
+				st.push_back(c);
+				st.push_back(separator);
+			}
+			else
+				st.push_back((char)n->GetData());
+		
+			n = n->GetNextNode();
+		}
+	}
+
+  return st;
 }
