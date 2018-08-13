@@ -37,14 +37,16 @@ void TypingMachine::RightKey() {
 }
 
 bool TypingMachine::TypeKey(char key) {
-//	if (key !=8 && (key < 32 || key > 126)) return false;
-	if (key < 32 || key > 126) return false;
+	if (key !=8 && (key < 32 || key > 126)) return false;
+//	if (key < 32 || key > 126) return false;
 
 	Node *n;
 	if (cursor == root)
 	{
 		n = root->InsertNextNode(key);
-		head=tail=cursor = n;
+		head=cursor = n;
+		if (tail == nullptr)
+			tail = n;
 	}
 	else
 	{
@@ -74,11 +76,10 @@ bool TypingMachine::EraseKey() {
 			}
 			else // head != tail
 			{
-				n = cursor->GetPreviousNode();
+				head = head->GetNextNode();
+				cursor = root;
 
-				cursor = head = head->GetNextNode();;
-
-				n->EraseNextNode();
+				root->EraseNextNode();
 
 			}
 
@@ -89,6 +90,9 @@ bool TypingMachine::EraseKey() {
 			n = cursor->GetPreviousNode();
 			if (cursor == tail)
 				cursor = tail = n;
+			else 
+				cursor = n;
+
 			n->EraseNextNode();
 			return true;
 		}
