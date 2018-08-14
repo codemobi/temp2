@@ -6,6 +6,7 @@
 TypingMachine::TypingMachine() {
 	root = cursor = new Node(0);
 	head = tail = nullptr;
+	str_length = 0;
 
   return;
 }
@@ -37,8 +38,10 @@ void TypingMachine::RightKey() {
 }
 
 bool TypingMachine::TypeKey(char key) {
-	if (key !=8 && (key < 32 || key > 126)) return false;
-//	if (key < 32 || key > 126) return false;
+//	if (key !=8 && (key < 32 || key > 126)) return false;
+	if (key < 32 || key > 126) return false;
+	if (str_length == 100) return false;
+	str_length++;
 
 	Node *n;
 	if (cursor == root)
@@ -82,8 +85,6 @@ bool TypingMachine::EraseKey() {
 				root->EraseNextNode();
 
 			}
-
-			return true;
 		}
 		else // cursor != head
 		{
@@ -94,10 +95,10 @@ bool TypingMachine::EraseKey() {
 				cursor = n;
 
 			n->EraseNextNode();
-			return true;
 		}
 	}
 
+	str_length--;
 	return true;
 }
 
@@ -108,19 +109,22 @@ std::string TypingMachine::Print(char separator) {
 	n = head;
 	if (head == nullptr)
 	{
-		st.push_back(separator);
+		if (separator!=0)
+			st.push_back(separator);
 	}
 	else
 	{
 		if (root == cursor){
-			st.push_back(separator);
+			if (separator != 0)
+				st.push_back(separator);
 		}
 		while (n != nullptr)
 		{
 			if (n == cursor ){
 				c = n->GetData();
 				st.push_back(c);
-				st.push_back(separator);
+				if (separator != 0)
+					st.push_back(separator);
 			}
 			else
 				st.push_back((char)n->GetData());

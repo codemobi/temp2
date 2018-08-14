@@ -6,6 +6,8 @@
 #include "node.h"
 #include "typing_machine.h"
 #include "getch.h"
+#include "node_test.h"
+#include "typing_machine_test.h"
 
 const char full_board[5][34] = {
   "+-------+   +-------+   +-------+",
@@ -142,6 +144,8 @@ void TestTypingMachine() {
 }
 
 int main() {
+	NodeTest();
+	TypingMachineTest();
   puts("1: Test Node.");
   puts("2: Test Typing Machine.");
   while (true) {

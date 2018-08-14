@@ -12,6 +12,7 @@ class TypingMachine {
 	Node *head;
 	Node *tail;
 	Node *cursor;
+	int str_length;
  public:
   TypingMachine();
   void HomeKey();
