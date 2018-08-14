@@ -130,6 +130,22 @@ private:
 		ASSERT_EQ(tm.Print('|'), std::string("abc|"));
 	}
 
+	// do nothing case
+	static void LeftKeyTest_DoNothing() {
+		TypingMachine tm;
+		tm.TypeKey('a');
+		tm.LeftKey();
+		tm.LeftKey();
+		ASSERT_EQ(tm.Print('|'), std::string("|a"));
+	}
+	static void RightKeyTest_DoNothing() {
+		TypingMachine tm;
+		tm.TypeKey('a');
+		tm.RightKey();
+		ASSERT_EQ(tm.Print('|'), std::string("a|"));
+	}
+
+
 public:
 	static void RunTest() {
 		HomeKeyTest();
@@ -140,6 +156,8 @@ public:
 		EndKeyTest_MiddleCursor();
 		LeftKeyTest_MiddleCursor();
 		RightKeyTest_MiddleCursor();
+		LeftKeyTest_DoNothing();
+		RightKeyTest_DoNothing();
 		// add more..
 	}
 };
@@ -148,87 +166,93 @@ class EraseTestSuite
 {
 private:
 	// "abc|" case
-	static void EraseTest() {
+	static void EraseTest_Case1() {
 		TypingMachine tm;
 		tm.TypeKey('a');
 		tm.TypeKey('b');
 		tm.TypeKey('c');
-		tm.HomeKey();
-		ASSERT_EQ(tm.Print('|'), std::string("|abc"));
+		tm.EraseKey();
+		ASSERT_EQ(tm.Print('|'), std::string("ab|"));
 	}
-	static void EndKeyTest() {
+	static void EraseTest_Case2() {
 		TypingMachine tm;
 		tm.TypeKey('a');
 		tm.TypeKey('b');
 		tm.TypeKey('c');
-		tm.EndKey();
-		ASSERT_EQ(tm.Print('|'), std::string("abc|"));
+		tm.EraseKey();
+		tm.EraseKey();
+		ASSERT_EQ(tm.Print('|'), std::string("a|"));
 	}
-	static void LeftKeyTest() {
+	static void EraseTest_Case3() {
 		TypingMachine tm;
 		tm.TypeKey('a');
 		tm.TypeKey('b');
 		tm.TypeKey('c');
-		tm.LeftKey();
-		ASSERT_EQ(tm.Print('|'), std::string("ab|c"));
+		tm.EraseKey();
+		tm.EraseKey();
+		tm.EraseKey();
+		ASSERT_EQ(tm.Print('|'), std::string("|"));
 	}
-	static void RightKeyTest() {
+	static void EraseTest_Case4_DoNothing() {
 		TypingMachine tm;
 		tm.TypeKey('a');
 		tm.TypeKey('b');
 		tm.TypeKey('c');
-		tm.RightKey();
-		ASSERT_EQ(tm.Print('|'), std::string("abc|"));
-	}
-
-	// "ab|c" case
-	static void HomeKeyTest_MiddleCursor() {
-		TypingMachine tm;
-		tm.TypeKey('a');
-		tm.TypeKey('b');
-		tm.TypeKey('c');
-		tm.LeftKey();
-		tm.HomeKey();
-		ASSERT_EQ(tm.Print('|'), std::string("|abc"));
-	}
-	static void EndKeyTest_MiddleCursor() {
-		TypingMachine tm;
-		tm.TypeKey('a');
-		tm.TypeKey('b');
-		tm.TypeKey('c');
-		tm.LeftKey();
-		tm.EndKey();
-		ASSERT_EQ(tm.Print('|'), std::string("abc|"));
-	}
-	static void LeftKeyTest_MiddleCursor() {
-		TypingMachine tm;
-		tm.TypeKey('a');
-		tm.TypeKey('b');
-		tm.TypeKey('c');
-		tm.LeftKey();
-		tm.LeftKey();
-		ASSERT_EQ(tm.Print('|'), std::string("a|bc"));
-	}
-	static void RightKeyTest_MiddleCursor() {
-		TypingMachine tm;
-		tm.TypeKey('a');
-		tm.TypeKey('b');
-		tm.TypeKey('c');
-		tm.LeftKey();
-		tm.RightKey();
-		ASSERT_EQ(tm.Print('|'), std::string("abc|"));
+		tm.EraseKey();
+		tm.EraseKey();
+		tm.EraseKey();
+		tm.EraseKey();
+		ASSERT_EQ(tm.Print('|'), std::string("|"));
 	}
 
 public:
 	static void RunTest() {
-		HomeKeyTest();
-		EndKeyTest();
-		LeftKeyTest();
-		RightKeyTest();
-		HomeKeyTest_MiddleCursor();
-		EndKeyTest_MiddleCursor();
-		LeftKeyTest_MiddleCursor();
-		RightKeyTest_MiddleCursor();
+		EraseTest_Case1();
+		EraseTest_Case2();
+		EraseTest_Case3();
+		EraseTest_Case4_DoNothing();
+
+		// add more..
+	}
+};
+
+class PrintTestSuite
+{
+private:
+	// "ab|" case
+	static void PrintTest_Case1() {
+		TypingMachine tm;
+		tm.TypeKey('a');
+		tm.TypeKey('b');
+		ASSERT_EQ(tm.Print('|'), std::string("ab|"));
+	}
+	static void PrintTest_Separator_Other() {
+		TypingMachine tm;
+		tm.TypeKey('a');
+		tm.TypeKey('b');
+		ASSERT_EQ(tm.Print('$'), std::string("ab$"));
+	}
+	static void PrintTest_Separator_NUL() {
+		TypingMachine tm;
+		tm.TypeKey('a');
+		tm.TypeKey('b');
+		ASSERT_EQ(tm.Print(0), std::string("ab"));
+	}
+	static void PrintTest_MAX_STRING() {
+		TypingMachine tm;
+		for (int i = 0; i < 110; i++)
+			tm.TypeKey('a');
+		// compare it with 100 'a' + '|'
+		ASSERT_EQ(tm.Print('|'), std::string("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|"));
+	}
+
+public:
+	static void RunTest() {
+		PrintTest_Case1();
+		PrintTest_Separator_Other();
+		PrintTest_Separator_NUL();
+		PrintTest_MAX_STRING();
+
 		// add more..
 	}
 };
@@ -244,10 +268,10 @@ void TypingMachineTest() {
 	KeyMovementTestSuite::RunTest();
 	puts("KeyMovementTestSuite::RunTest Done");
 
-//	EraseTestSuite::RunTest();
+	EraseTestSuite::RunTest();
 	puts("EraseTestSuite::RunTest Done");
 
-//	PrintTestSuite::RunTest();
+	PrintTestSuite::RunTest();
 	puts("PrintTestSuite::RunTest Done");
 	// add more..
 }

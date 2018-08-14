@@ -40,7 +40,7 @@ void TypingMachine::RightKey() {
 bool TypingMachine::TypeKey(char key) {
 //	if (key !=8 && (key < 32 || key > 126)) return false;
 	if (key < 32 || key > 126) return false;
-	if (str_length == 100) return false;
+	if (str_length == 100) return false; 
 	str_length++;
 
 	Node *n;
