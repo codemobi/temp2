@@ -145,6 +145,13 @@ private:
 		ASSERT_EQ(tm.Print('|'), std::string("a|"));
 	}
 
+	// corner case
+	static void EndKeyTest_CornerCase_FirstEnd() {
+		TypingMachine tm;
+		tm.EndKey();
+		tm.TypeKey('a');
+		ASSERT_EQ(tm.Print('|'), std::string("a|"));
+	}
 
 public:
 	static void RunTest() {
@@ -158,6 +165,7 @@ public:
 		RightKeyTest_MiddleCursor();
 		LeftKeyTest_DoNothing();
 		RightKeyTest_DoNothing();
+		EndKeyTest_CornerCase_FirstEnd();
 		// add more..
 	}
 };

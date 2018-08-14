@@ -4,7 +4,9 @@
 #include <string>
 
 TypingMachine::TypingMachine() {
-	root = cursor = new Node(0);
+	root = cursor = new Node(0); // "root" node do the two things
+	                             // first, it plays a role of a factory node to produce a new node from an initial typing
+	                             // second, it represents a first cursor before first head
 	head = tail = nullptr;
 	str_length = 0;
 
@@ -17,7 +19,8 @@ void TypingMachine::HomeKey() {
 }
 
 void TypingMachine::EndKey() {
-	cursor = tail;
+	if (tail == nullptr) cursor = root;
+	else cursor = tail;
   return;
 }
 
